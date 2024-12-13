@@ -161,8 +161,8 @@ public class DashBoardUI {
 
             if ("DEPOSIT".equalsIgnoreCase(transaction.getType())) {
                 transactionLabel.setForeground(Color.GREEN); // Deposit in green
-            } else if ("WITHDRAWAL".equalsIgnoreCase(transaction.getType())) {
-                transactionLabel.setForeground(Color.BLUE); // Withdrawal in red
+            } else if ("WITHDRAWL".equalsIgnoreCase(transaction.getType())) {
+                transactionLabel.setForeground(Color.RED); // Withdrawal in red
             }
 
             miniStatementFrame.add(transactionLabel);
