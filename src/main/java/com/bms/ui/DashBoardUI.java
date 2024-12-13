@@ -16,6 +16,8 @@ import com.bms.entity.User;
 import com.bms.service.UserService;
 
 public class DashBoardUI {
+	
+	
     private JFrame frame;
     private User loggedInUser;
     private UserService userService;
@@ -63,13 +65,21 @@ public class DashBoardUI {
         if (amountStr != null) {
             try {
                 double amount = Double.parseDouble(amountStr);
+                // Update balance
+                loggedInUser.setBalance(loggedInUser.getBalance() + amount);
+                
                 atmOperations.deposit(loggedInUser, amount);
+                
+             
+                
                 JOptionPane.showMessageDialog(frame, "Successfully deposited $" + amount);
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(frame, "Invalid amount entered.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (IllegalArgumentException e) {
                 JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+            catch(Exception e) {
+            	System.out.println("Error occured due to mini");           }
         }
     }
 
@@ -98,9 +108,13 @@ public class DashBoardUI {
                 JOptionPane.showMessageDialog(frame, "Invalid amount entered.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (IllegalArgumentException e) {
                 JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }  catch(Exception e) {
+            	System.out.println("Error occured due to mini");           
             }
         }
-    }
+    } 
+        
+    
 
     private void checkBalance() {
         double balance = userService.checkBalance(loggedInUser);
@@ -109,6 +123,7 @@ public class DashBoardUI {
 
     // New method to show mini statement
     private void showMiniStatement() {
+    	
         if (loggedInUser.getTransactions().isEmpty()) {
             JOptionPane.showMessageDialog(frame, "No transactions available.", "Mini Statement", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -148,6 +163,9 @@ public class DashBoardUI {
             }
 
             miniStatementFrame.add(transactionLabel);
+            
+            System.out.println("After changing");
+            System.out.println(transaction);
         }
 
         // Display total balance
@@ -156,6 +174,8 @@ public class DashBoardUI {
         miniStatementFrame.add(balanceLabel);
 
         miniStatementFrame.setVisible(true);
+        
+        
     }
 
 

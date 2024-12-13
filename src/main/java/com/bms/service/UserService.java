@@ -65,63 +65,78 @@ public class UserService {
     }
 
     public void deposit(User user, double amount) {
-        
-            // Update balance
-            user.setBalance(user.getBalance() + amount);
+    	
+    	try {
+    		
+    		
             
          // Begin transaction
             entityManager.getTransaction().begin();   
 
             // Merge the updated user to persist the changes in the DB
             entityManager.merge(user);
-                       
 
-            // Example: Creating and using a Transaction
-            Transaction txn = new Transaction(user, "DEPOSIT", amount, LocalDateTime.now());
-                            
-            
-            entityManager.merge(txn);
-            
-            
-           
             // Commit transaction
             entityManager.getTransaction().commit();
             
-            entityManager.close();
+            
+    	}
+    	catch(Exception e) {
+    		System.out.println("User service  handled");
+    	}
+        
+          
+            
         
     }
 
 
     public void withdraw(User user, double amount) {
-        if (amount > 0 && amount <= user.getBalance()) {
-            
+    	try {
+    		if (amount > 0 && amount <= user.getBalance()) {
+                
 
-            // Update balance
-            user.setBalance(user.getBalance() - amount);
-            
-         // Begin transaction
-            entityManager.getTransaction().begin();
+                // Update balance
+                user.setBalance(user.getBalance() - amount);
+                
+             // Begin transaction
+                entityManager.getTransaction().begin();
 
-            // Merge the updated user to persist the changes in the DB
-            entityManager.merge(user);
-            
-            
-            
-            Transaction txn = new Transaction(user, "WITHDRAWL", amount, LocalDateTime.now());
-            
-             
-            
-            entityManager.persist(txn);
-            
-            
-            // Commit transaction
-            entityManager.getTransaction().commit();
-            entityManager.close();
-            
-        } else {
-            throw new IllegalArgumentException("Insufficient balance or invalid amount.");
-        }
+                // Merge the updated user to persist the changes in the DB
+                entityManager.merge(user);
+                           
+                // Commit transaction
+                entityManager.getTransaction().commit();
+               
+                
+            } else {
+                throw new IllegalArgumentException("Insufficient balance or invalid amount.");
+            }
+    	}catch(Exception e) {
+			System.out.println("Withdw handled");
+		}
+        
     }
+    
+    public void transaction(User user, String type, double amt,LocalDateTime timestamp) {
+    	
+    	Transaction transaction = new Transaction(user, type, amt, timestamp);
+    	user.addTransaction(transaction);  // Add transaction to user
+    	
+    	// Begin transaction
+        entityManager.getTransaction().begin(); 
+    	         
+       
+        entityManager.merge(transaction);
+        
+        // Commit transaction
+        entityManager.getTransaction().commit();
+        
+        System.out.println("BEfore touching mini");
+        
+        System.out.println(transaction);
+    }
+    
 
 
 }
