@@ -19,11 +19,9 @@ public class ATMOperations {
     // Deposit money into the user's account
     public void deposit(User user, double amount) {
     	try {
-    		if (amount <= 0) {
-                throw new IllegalArgumentException("Deposited amount must me greater than zero");
-            }
-            	
-    		
+    		// Update balance
+            user.setBalance(user.getBalance() + amount);
+            
             userService.deposit(user, amount);
             
             userService.transaction(user, "DEPOSIT", amount, LocalDateTime.now());

@@ -65,14 +65,15 @@ public class DashBoardUI {
         if (amountStr != null) {
             try {
                 double amount = Double.parseDouble(amountStr);
-                // Update balance
-                loggedInUser.setBalance(loggedInUser.getBalance() + amount);
                 
-                atmOperations.deposit(loggedInUser, amount);
-                
-             
-                
-                JOptionPane.showMessageDialog(frame, "Successfully deposited $" + amount);
+                if (amount > 0) {
+                	atmOperations.deposit(loggedInUser, amount);
+                	 JOptionPane.showMessageDialog(frame, "Successfully deposited $" + amount);
+                }
+                else
+                	JOptionPane.showMessageDialog(frame, "Enter Amount greater than zero.", "Error", JOptionPane.ERROR_MESSAGE);
+                   
+               
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(frame, "Invalid amount entered.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (IllegalArgumentException e) {
