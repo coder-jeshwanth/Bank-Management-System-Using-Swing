@@ -118,24 +118,30 @@ public class UserService {
         
     }
     
-    public void transaction(User user, String type, double amt,LocalDateTime timestamp) {
-    	
-    	Transaction transaction = new Transaction(user, type, amt, timestamp);
-    	user.addTransaction(transaction);  // Add transaction to user
-    	
-    	// Begin transaction
-        entityManager.getTransaction().begin(); 
-    	         
-       
-        entityManager.merge(transaction);
-        
-        // Commit transaction
-        entityManager.getTransaction().commit();
-        
-        System.out.println("BEfore touching mini");
-        
-        System.out.println(transaction);
+    public void transaction(User user, String type, double amt, LocalDateTime timestamp) {
+        try {
+            Transaction transaction = new Transaction(user, type, amt, timestamp);
+            user.addTransaction(transaction); // Add transaction to user
+
+            // Begin transaction
+            entityManager.getTransaction().begin();
+
+            // Persist transaction
+            entityManager.persist(transaction);
+            entityManager.merge(user); // Ensure user changes are also persisted
+
+            // Commit transaction
+            entityManager.getTransaction().commit();
+
+            System.out.println("Transaction saved: " + transaction);
+        } catch (Exception e) {
+            System.err.println("Failed to save transaction: " + e.getMessage());
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+        }
     }
+
     
 
 

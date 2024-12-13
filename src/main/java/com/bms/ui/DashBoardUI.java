@@ -123,8 +123,11 @@ public class DashBoardUI {
 
     // New method to show mini statement
     private void showMiniStatement() {
-    	
-        if (loggedInUser.getTransactions().isEmpty()) {
+        // Fetch the latest user details from the database
+        User refreshedUser = userService.getUserByCardNumber(loggedInUser.getCardNumber());
+        loggedInUser = refreshedUser; // Update the logged-in user to reflect the latest data
+
+        if (refreshedUser.getTransactions().isEmpty()) {
             JOptionPane.showMessageDialog(frame, "No transactions available.", "Mini Statement", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
@@ -140,8 +143,8 @@ public class DashBoardUI {
         dateLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
         // User details
-        JLabel userNameLabel = new JLabel("Name: " + loggedInUser.getName(), SwingConstants.LEFT);
-        JLabel accountNumberLabel = new JLabel("Account No: " + loggedInUser.getCardNumber(), SwingConstants.LEFT);
+        JLabel userNameLabel = new JLabel("Name: " + refreshedUser.getName(), SwingConstants.LEFT);
+        JLabel accountNumberLabel = new JLabel("Account No: " + refreshedUser.getCardNumber(), SwingConstants.LEFT);
 
         miniStatementFrame.add(bankNameLabel);
         miniStatementFrame.add(dateLabel);
@@ -149,7 +152,7 @@ public class DashBoardUI {
         miniStatementFrame.add(accountNumberLabel);
 
         // Transaction details
-        for (Transaction transaction : loggedInUser.getTransactions()) {
+        for (Transaction transaction : refreshedUser.getTransactions()) {
             JLabel transactionLabel = new JLabel();
             String transactionText = transaction.getType() + ": $" + transaction.getAmount() + " on " + transaction.getTimestamp();
 
@@ -157,26 +160,22 @@ public class DashBoardUI {
             transactionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
             if ("DEPOSIT".equalsIgnoreCase(transaction.getType())) {
-                transactionLabel.setForeground(Color.green); // Deposit in green
+                transactionLabel.setForeground(Color.GREEN); // Deposit in green
             } else if ("WITHDRAWAL".equalsIgnoreCase(transaction.getType())) {
-                transactionLabel.setForeground(Color.RED); // Withdrawal in red
+                transactionLabel.setForeground(Color.BLUE); // Withdrawal in red
             }
 
             miniStatementFrame.add(transactionLabel);
-            
-            System.out.println("After changing");
-            System.out.println(transaction);
         }
 
         // Display total balance
-        JLabel balanceLabel = new JLabel("Total Balance: $" + userService.checkBalance(loggedInUser), SwingConstants.CENTER);
+        JLabel balanceLabel = new JLabel("Total Balance: $" + userService.checkBalance(refreshedUser), SwingConstants.CENTER);
         balanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
         miniStatementFrame.add(balanceLabel);
 
         miniStatementFrame.setVisible(true);
-        
-        
     }
+
 
 
     private void logout() {
